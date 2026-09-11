@@ -972,17 +972,23 @@ def submit():
 
         </div>
 
+<div class="button-group">
 
-        <div class="button-group">
+    <a
+        class="button"
+        href="/review/{quiz_id}"
+    >
+        Review Incorrect Answers
+    </a>
 
-            <a
-                class="button"
-                href="/review/{quiz_id}"
-            >
-                Review Incorrect Answers
-            </a>
+    <a
+        class="button secondary"
+        href="/"
+    >
+        Start New Quiz
+    </a>
 
-        </div>
+</div>
 
     </div>
 
@@ -1118,16 +1124,23 @@ def quiz_summary(quiz_id):
         </div>
 
 
-        <div class="button-group">
+<div class="button-group">
 
-            <a
-                class="button"
-                href="/review/{quiz_id}"
-            >
-                Review Incorrect Answers
-            </a>
+    <a
+        class="button"
+        href="/review/{quiz_id}"
+    >
+        Review Incorrect Answers
+    </a>
 
-        </div>
+    <a
+        class="button secondary"
+        href="/"
+    >
+        Start New Quiz
+    </a>
+
+</div>
 
     </div>
 

@@ -448,6 +448,7 @@ Use EXACTLY this structure:
         "choice 4"
       ],
       "answer": "correct choice text"
+            "explanation": "brief explanation of why the correct answer is correct"
     }
   ]
 }
@@ -456,8 +457,10 @@ Rules:
 
 - The top-level key must be "questions".
 - Do not add a "quiz" key.
+- Every question must also include the key "explanation".
+- The explanation must be brief, clear, and educational.
 - Every question must use the keys
-  "question", "choices", and "answer".
+  "question", "choices", "answer", and "explanation".
 - Choices must contain plain text only.
 - Do not include A., B., C., or D.
   inside choices.
@@ -842,6 +845,11 @@ def submit():
 
         correct_answer = question["answer"]
 
+        explanation = question.get(
+            "explanation",
+            ""
+        )
+
         correct_letter = ""
 
 
@@ -882,6 +890,9 @@ def submit():
 
             "correct_answer":
                 correct_answer,
+
+            "explanation":
+                explanation,
 
             "is_correct":
                 is_correct
@@ -1256,6 +1267,13 @@ def review_quiz(quiz_id):
                 <b>Correct answer:</b>
 
                 {correct_text}
+
+            </p>
+
+            <p
+                                <b>Explanation:</b>
+
+                {html.escape(item["explanation"])}
 
             </p>
 

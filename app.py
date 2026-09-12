@@ -71,6 +71,7 @@ vocabulary = {
 
 
 QUIZ_INSTRUCTIONS = """
+
 Return valid JSON only.
 
 Use this exact structure:
@@ -78,36 +79,27 @@ Use this exact structure:
   "questions": [
     {
       "question": "question text",
-      "choices": ["choice 1", "choice 2", "choice 3", "choice 4"],
-      "answer": "correct choice text",
-      "explanation": "brief explanation of why the correct answer is correct"
+      "explanation": "brief explanation"
     }
   ]
 }
 
 Rules:
 - Create exactly 5 questions.
-- Use question_plan exactly.
-- For each question, "target" is the correct answer.
-- Copy the 4 choices exactly and preserve their order.
-- Do not replace, add, remove, or reshuffle choices.
-- The answer must exactly match the target.
-- Every question must be a fill-in-the-blank question with exactly one blank.
-- The blank must test the correct reporting verb.
+- Follow question_plan in order.
+- Each question must be a fill-in-the-blank question with exactly one blank.
+- The blank must test the target reporting verb.
 - Use the meaning and structures from vocabulary_data.
 - Construct a natural English sentence so the exact target word fits grammatically.
 - Use different contexts and sentence patterns across the 5 questions.
-- Do not reveal the target word anywhere in the question.
-- Do not create definition, situation-only, or sentence-selection questions.
+- Do not reveal the target word in the question.
 - The top-level key must be "questions".
-- Every question must contain only these keys:
-  "question", "choices", "answer", "explanation".
+- Every question must contain only:
+  "question" and "explanation".
 - The explanation must be brief, clear, and educational.
-- Choices must be plain text only, without A., B., C., or D.
-- Do not use markdown code blocks.
+- Do not use markdown.
 - Do not add text outside the JSON.
 """
-
 
 def page(content):
     return f"""
@@ -374,8 +366,8 @@ def generate_questions(topic, difficulty):
         "difficulty": difficulty,
         "question_plan": question_plan,
         "vocabulary_data": {
-            word: vocabulary[word]
-            for word in selected_words
+            plan["target"]: vocabulary[plan["target"]]
+            for plan in question_plan
         },
         "instructions": QUIZ_INSTRUCTIONS,
         "language": "English"

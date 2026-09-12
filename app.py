@@ -39,6 +39,19 @@ def page(content):
 
         <style>
 
+    .loading-text {{
+        animation: blink 1.2s infinite;
+    }}
+
+    @keyframes blink {{
+        0%, 100% {{
+            opacity: 1;
+        }}
+
+        50% {{
+            opacity: 0.25;
+        }}
+    }}
             * {{
                 box-sizing: border-box;
             }}
@@ -766,9 +779,10 @@ Rules:
             <button type="submit">
                 Start Quiz
             </button>
-            <div id="loading" style="display:none; text-align:center; margin-top:20px;">
-                <h2 style="font-size:28px;">
+            <div id="loading" style="display:none; text-align:center; margin-top:24px;">
+                <h2 class="loading-text">
                         Generating your quiz...
+                </h2>
             </div>
 
         </form>

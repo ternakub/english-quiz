@@ -393,7 +393,11 @@ def page(content):
             {content}
 
         </div>
-
+        <script>
+            function showLoading() {{
+               document.getElementById("loading").style.display = "block";
+            }}
+        </script>
     </body>
 
     </html>
@@ -665,7 +669,7 @@ Rules:
             to start the quiz.
         </p>
 
-        <form method="POST">
+        <form method="POST" onsubmit="showLoading()">
 
             <div class="field">
 
@@ -762,6 +766,10 @@ Rules:
             <button type="submit">
                 Start Quiz
             </button>
+            <div id="loading" style="display:none; text-align:center; margin-top:20px;">
+                <h2>Loading...</h2>
+                <p>Generating your quiz, please wait.</p>
+            </div>
 
         </form>
 

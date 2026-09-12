@@ -767,8 +767,8 @@ Rules:
                 Start Quiz
             </button>
             <div id="loading" style="display:none; text-align:center; margin-top:20px;">
-                <h2>Loading...</h2>
-                <p>Generating your quiz, please wait.</p>
+                <h2 style="font-size:28px;">
+                        Generating your quiz...
             </div>
 
         </form>

@@ -2,6 +2,7 @@ import os
 import json
 import uuid
 import html
+import random
 
 from flask import Flask, request
 from openai import OpenAI
@@ -16,6 +17,201 @@ client = OpenAI(
 
 quizzes = {}
 
+vocabulary = {
+    "add": {
+        "meaning": "กล่าวเพิ่มเติม",
+        "structures": [
+            "that + S + V"
+        ]
+    },
+
+    "announce": {
+        "meaning": "ประกาศ",
+        "structures": [
+            "that + S + V"
+        ]
+    },
+
+    "complain": {
+        "meaning": "บ่น / ร้องเรียน",
+        "structures": [
+            "that + S + V",
+            "complain about + V.ing"
+        ]
+    },
+
+    "explain": {
+        "meaning": "อธิบาย",
+        "structures": [
+            "that + S + V"
+        ]
+    },
+
+    "predict": {
+        "meaning": "ทำนาย / คาดการณ์",
+        "structures": [
+            "that + S + V"
+        ]
+    },
+
+    "refuse": {
+        "meaning": "ปฏิเสธ",
+        "structures": [
+            "to / not to + V.inf"
+        ]
+    },
+
+    "offer": {
+        "meaning": "เสนอ",
+        "structures": [
+            "to / not to + V.inf"
+        ]
+    },
+
+    "promise": {
+        "meaning": "สัญญา",
+        "structures": [
+            "to / not to + V.inf"
+        ]
+    },
+
+    "agree": {
+        "meaning": "เห็นด้วย / ตกลง",
+        "structures": [
+            "to / not to + V.inf"
+        ]
+    },
+
+    "advise": {
+        "meaning": "แนะนำ",
+        "structures": [
+            "object + to + V.inf",
+            "that + should + S + V"
+        ]
+    },
+
+    "ask": {
+        "meaning": "ขอ / ถาม",
+        "structures": [
+            "object + to + V.inf"
+        ]
+    },
+
+    "encourage": {
+        "meaning": "สนับสนุน / ให้กำลังใจ",
+        "structures": [
+            "object + to + V.inf"
+        ]
+    },
+
+    "invite": {
+        "meaning": "เชิญ",
+        "structures": [
+            "object + to + V.inf"
+        ]
+    },
+
+    "order": {
+        "meaning": "สั่ง",
+        "structures": [
+            "object + to + V.inf"
+        ]
+    },
+
+    "persuade": {
+        "meaning": "ชักชวน / โน้มน้าว",
+        "structures": [
+            "object + to + V.inf"
+        ]
+    },
+
+    "remind": {
+        "meaning": "เตือนให้จำ",
+        "structures": [
+            "object + to + V.inf"
+        ]
+    },
+
+    "tell": {
+        "meaning": "บอก",
+        "structures": [
+            "object + to + V.inf"
+        ]
+    },
+
+    "warn": {
+        "meaning": "เตือน",
+        "structures": [
+            "object + to + V.inf",
+            "warn someone against + V.ing"
+        ]
+    },
+
+    "deny": {
+        "meaning": "ปฏิเสธว่าไม่ได้ทำ",
+        "structures": [
+            "V.ing"
+        ]
+    },
+
+    "admit": {
+        "meaning": "ยอมรับ",
+        "structures": [
+            "V.ing"
+        ]
+    },
+
+    "recommend": {
+        "meaning": "แนะนำ",
+        "structures": [
+            "V.ing",
+            "that + should + S + V"
+        ]
+    },
+
+    "suggest": {
+        "meaning": "เสนอแนะ",
+        "structures": [
+            "V.ing",
+            "that + should + S + V"
+        ]
+    },
+
+    "apologise": {
+        "meaning": "ขอโทษ",
+        "structures": [
+            "apologise for + V.ing"
+        ]
+    },
+
+    "blame": {
+        "meaning": "ตำหนิ / โทษ",
+        "structures": [
+            "blame someone for + V.ing"
+        ]
+    },
+
+    "congratulate": {
+        "meaning": "แสดงความยินดี",
+        "structures": [
+            "congratulate someone on + V.ing"
+        ]
+    },
+
+    "thank": {
+        "meaning": "ขอบคุณ",
+        "structures": [
+            "thank someone for + V.ing"
+        ]
+    },
+
+    "request": {
+        "meaning": "ขอร้อง / ร้องขอ",
+        "structures": [
+            "that + should + S + V"
+        ]
+    }
+}
 
 # =========================================================
 # PAGE TEMPLATE
@@ -431,17 +627,60 @@ def home():
         topic = request.form["topic"]
         difficulty = request.form["difficulty"]
 
+        selected_words = random.sample(
+            list(vocabulary.keys()),
+            20
+        )
+
+        target_words = selected_words[:5]
+
+        distractor_words = selected_words[5:]
+
+        question_plan = []
+
+        for i in range(5):
+
+            target = target_words[i]
+
+            distractors = distractor_words[
+                i * 3:(i + 1) * 3
+            ]
+
+            choices = [
+                target,
+                *distractors
+            ]
+
+            random.shuffle(choices)
+
+            question_plan.append({
+                "target": target,
+                "choices": choices
+            })
+
+        print("QUESTION PLAN:", question_plan)
+        print("TARGET:", target_words)
+        print("DISTRACTORS:", distractor_words)
+
+
         quiz_request = {
 
-            "task":
-                "Generate an English multiple-choice quiz",
+            "question_plan": question_plan,
 
-            "topic":
-                topic,
+            "task": "Generate an English multiple-choice quiz",
 
-            "difficulty":
-                difficulty,
+            "topic": topic,
 
+            "target_words": target_words,
+
+            "distractor_words": distractor_words,
+
+            "vocabulary_data": {
+                word: vocabulary[word]
+                for word in selected_words
+            },
+
+            "difficulty": difficulty,
             "number_of_questions":
                 5,
 
@@ -453,6 +692,42 @@ def home():
 Return valid JSON only.
 
 Use EXACTLY this structure:
+
+Vocabulary rules:
+
+- There are exactly 5 target words.
+- Create exactly 5 questions.
+- Question 1 must use target_words[0] as the correct answer.
+- Question 2 must use target_words[1] as the correct answer.
+- Question 3 must use target_words[2] as the correct answer.
+- Question 4 must use target_words[3] as the correct answer.
+- Question 5 must use target_words[4] as the correct answer.
+
+- Each question must have exactly 4 choices.
+- The correct choice must be the target word for that question.
+- The other 3 choices must come only from distractor_words.
+- Do not use any word outside target_words and distractor_words.
+- Do not repeat distractor words across the 5 questions.
+- Shuffle the position of the correct answer among the 4 choices.
+
+- Use the meaning and structures from vocabulary_data.
+- The question must test the target word accurately according to its meaning and sentence structure.
+
+Question type rules:
+
+- Every question must be a fill-in-the-blank question.
+- Each question must contain one blank.
+- The blank must test the correct reporting verb.
+- Use the target word as the correct answer.
+- The sentence must follow one of the allowed structures from vocabulary_data.
+- Do not create meaning-definition questions.
+- Do not create situation-only questions.
+- Do not create sentence-selection questions.
+- Do not reveal the target word anywhere in the question.
+- The blank should appear inside a natural English sentence.
+- Use different contexts and sentence patterns across the 5 questions.
+
+Do not use the same question style more than 2 times in one quiz.
 
 {
   "questions": [
